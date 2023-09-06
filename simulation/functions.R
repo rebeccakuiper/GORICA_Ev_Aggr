@@ -201,7 +201,13 @@ performance <- function(row){ # (row, threshold)
   
   ratio <- row$ratios
   set <- row$sets
-  true_hyp <- ifelse(ratio == 'ratio4', true_hyps_ratio4[set], true_hyps[set]) # Ht depends on set + ratio combination
+  if(ratio == "ratio4"){
+    true_hyp <- true_hyps_ratio4[set]
+    correct_hyps <- grace_hyps_ratio4[set]
+  } else {
+    true_hyp <- true_hyps[set]
+    correct_hyps <- grace_hyps[set]
+  }
   
   # obtain weights information
   weights_NA <- row[(n_conditions+1):ncol(row)] # get all weights, including of hypotheses that did not exist in the set which give NA (this happens because not all sets contain the same number of hypotheses)
@@ -214,5 +220,6 @@ performance <- function(row){ # (row, threshold)
   # performance indicators
   selected_Ht <- true_hyp == selected     # check if true hypothesis is the selected hypothesis
   relsup <- highest_weight/second_highest # relative support of hyp with highest weight vs hyp with second highest weight
-  return(c(selected_Ht, relsup, weights[true_hyp], highest_weight))
+  grace <- selected %in% correct_hyps[[1]] # check if selected hyp is at least correct, although it might not be most parsimonious
+  return(c(selected_Ht, relsup, weights[true_hyp], highest_weight, grace))
 }

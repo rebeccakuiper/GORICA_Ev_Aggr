@@ -1,0 +1,7 @@
+MASS
+Matrix
+matrixStats
+restriktor
+doSNOW
+foreach
+stringr
